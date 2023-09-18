@@ -799,7 +799,7 @@ image_source="auto"
 #       openEuler, OpenIndiana, openmamba, OpenMandriva, OpenStage, OpenWrt,
 #       osmc, Oracle, OS Elbrus, PacBSD, Parabola, Pardus, Parrot, Parsix,
 #       TrueOS, PCLinuxOS, Pengwin, Peppermint, Pisi, popos, Porteus, PostMarketOS,
-#       Proxmox, PuffOS, Puppy, PureOS, Qubes, Qubyt, Quibian, Radix, Raspbian,
+#       Proxmox, PuffOS, Puppy, PureOS, QNX, Qubes, Qubyt, Quibian, Radix, Raspbian,
 #       Reborn_OS, Redstar, Redcore, Redhat, Refracted_Devuan, Regata, Regolith,
 #       Rocky, Rosa, sabotage, Sabayon, Sailfish, SalentOS, Scientific, Septor,
 #       SereneLinux, SharkLinux, Siduction, SkiffOS, Slackware, SliTaz, SmartOS,
@@ -944,6 +944,7 @@ get_os() {
         MINIX)    os=MINIX ;;
         AIX)      os=AIX ;;
         IRIX*)    os=IRIX ;;
+        QNX)      os=QNX ;;
         FreeMiNT) os=FreeMiNT ;;
 
         Linux|GNU*)
@@ -1205,6 +1206,10 @@ get_distro() {
 
         IRIX)
             distro="IRIX ${kernel_version}"
+        ;;
+
+        QNX)
+            distro="QNX Neutrino ${kernel_version}"
         ;;
 
         FreeMiNT)
@@ -1790,6 +1795,8 @@ get_de() {
                 ;;
             esac
         ;;
+
+        "QNX") de=Photon ;;
 
         FreeMiNT)
             freemint_wm=(/proc/*)
@@ -2785,6 +2792,12 @@ get_memory() {
 
             mem_total="$((mem_stat[3] / 1024))"
             mem_free="$((mem_stat[5] / 1024))"
+            mem_used="$((mem_total - mem_free))"
+        ;;
+
+        "QNX")
+            mem_free="$(pidin info | head -n 1 | awk '{split(substr($3,9),a,"/");print a[1]+0}')"
+            mem_total="$(pidin info | head -n 1 | awk '{split(substr($3,9),a,"/");print a[2]+0}')"
             mem_used="$((mem_total - mem_free))"
         ;;
 
@@ -9834,6 +9847,24 @@ dNd                                  dNd
 dNd                                  dNd
 dNm//////////////////////////////////mNd
 dmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmd
+EOF
+        ;;
+
+        "QNX"*)
+            set_colors 4 5 7 6
+            read -rd '' ascii_data <<'EOF'
+${c1}       ,,,,,,,,,,,,,,,,,,                         ,,,,,,,         ,,,,,,,,
+    ,,,${c3}@@@@@@@@@@@@@@@@@@${c1},,                     ,,,,${c3}@@@@@${c1},,      ,,${c3}@@@@@${c1},,
+  ,,,${c3}@@@@@@@@@@@@@@@@@@@@@@${c1},,                 ,,,,,,,,${c3}@@@@@@${c1},  ,${c3}@@@@@@${c1},,,
+ ,,,${c3}@@@@@@${c1},,,,,,,,,,,,${c3}@@@@@${c1},,                 ,,,,,,,,,,${c3}@@@@@@@@@@@@${c1},,,
+ ,,,${c3}@@@@@${c1},,,,,,,${c3}@@@@@@@@@@@${c1},,${c3}@@@@@@@@${c1},,     ,,,${c3}@@@@@@${c1},,,,,${c3}@@@@@@@@@${c1},,
+,,,,${c3}@@@@@@${c1},,,,,,,,,${c3}@@@@@@@@@@@@@@@@@@@@@${c1},  ,,,,${c3}@@@@@@${c1},,${c3}@@@@@@${c1},,${c3}@@@@@@${c1},,
+,,,,,${c3}@@@@@@@@@@@@@@@@@@@@@@@@@${c1},${c3}@@@${c1},,${c3}@@@@@@${c1},,,,,${c3}@@@@@@@@@@@${c1},,,,,,,,${c3}@@@@@${c1},,,
+ ,,,,,,${c3}@@@@@@@@@@@@@@@@@@${c1},,,,,${c3}@@@@${c1},,,,${c3}@@@@@@@${c1},,${c3}@@@${c1},,,,,,,,,  ,,,,,,,,,,,,,,
+  ,,,,,,,,,,,,,,,,,,,,,,,,,,,${c3}@@@@@${c1},,,,,,,${c3}@@@@@@@@@@@@${c1},,,,,     ,,,,,,,,,,
+     ,,,,,,,,,,,,,,,,,    ,,,${c3}@@@@@${c1},,,,,,,,,,${c3}@@@@@@@@@${c1},,,
+                          ,,,,,,,,,   ,,,,,,,,,,,,,,,,
+                          ,,,,,,,        ,,,,,,,,,,,
 EOF
         ;;
 
